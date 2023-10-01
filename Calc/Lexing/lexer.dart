@@ -111,6 +111,9 @@ List<Token> lex(String text) {
       case "%":
         tokens.add(Token(TokenType.MOD, null));
         break;
+      case "\$":
+        tokens.add(Token(TokenType.DOLLAR, null));
+        break;
       case "&":
         if (match("&")) {
           tokens.add(Token(TokenType.AND, null));

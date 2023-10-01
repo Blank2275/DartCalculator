@@ -1,6 +1,10 @@
 import '../error.dart';
+import 'Parameter.dart';
+import 'Type.dart';
+import 'declaration.dart';
 import 'expression.dart';
 import '../Lexing/token.dart';
+import 'statement.dart';
 
 class Parser {
   int current = 0;
@@ -26,6 +30,11 @@ class Parser {
     return tokens[current];
   }
 
+  Token? peekNext() {
+    if (current >= tokens.length - 1) return null;
+    return tokens[current + 1];
+  }
+
   bool match(List<TokenType> targets) {
     if (isAtEnd()) return false;
 
@@ -43,6 +52,71 @@ class Parser {
     if (match([type])) return;
 
     parseError(message);
+  }
+
+  Decl parseDeclaration() {
+    if (match([TokenType.IDENTIFIER_LITERAL])) {
+      if (previous().value == "fun") {
+        return functionDeclaration();
+      }
+    }
+
+    return StmtDecl(parseStatement());
+  }
+
+  Decl functionDeclaration() {
+    Token name = advance();
+
+    expect(TokenType.LPAREN, "Invalid function declaration");
+
+    List<Parameter> parameters = [];
+
+    if (!match([TokenType.RPAREN])) {
+      parameters.add(parseParameter());
+
+      while (match([TokenType.COMMA])) {
+        parameters.add(parseParameter());
+      }
+
+      expect(TokenType.RPAREN, "Invalid function declaration");
+    }
+
+    expect(TokenType.ASSIGNMENT, "Invalid function declaration");
+
+    Stmt body = parseStatement();
+
+    return FuncDecl(name, parameters, body);
+  }
+
+  Parameter parseParameter() {
+    expect(TokenType.IDENTIFIER_LITERAL, "Expected parameter");
+    Token first = previous();
+
+    if (match([TokenType.IDENTIFIER_LITERAL])) {
+      return Parameter(ValueType(first.value!), previous().value!);
+    }
+
+    return Parameter(ValueType("number"), first.value!);
+  }
+
+  Stmt parseStatement() {
+    if (peek().type == TokenType.IDENTIFIER_LITERAL) {
+      if (peekNext()?.type == TokenType.ASSIGNMENT) {
+        return assignment();
+      }
+    }
+
+    return ExprStmt(parseExpression());
+  }
+
+  Stmt assignment() {
+    Token name = advance();
+
+    expect(TokenType.ASSIGNMENT, "should not print, check parseStatement");
+
+    Expr value = parseExpression();
+
+    return AssignmentStmt(name, value);
   }
 
   Expr parseExpression() {

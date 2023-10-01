@@ -189,7 +189,7 @@ ${prefix}}""";
 }
 
 class NullExpr extends Expr {
-  // should never come up, just a filer for default case in parsing
+  // should never come up, just a filler for default case in parsing
 
   String pretty(int level) {
     String prefix = "    " * level;

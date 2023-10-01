@@ -3,10 +3,16 @@ import 'Calc/Lexing/token.dart';
 import 'Calc/Parsing/parser.dart';
 
 void main() {
-  String testExpr = "[0, 1, 5 * 7, sin(2)]";
-  // String testExpr = "- x";
+  // String testStmt = "a = b + 5.5";
+  // String testStmt = "5 * cos(5)";
+  // String testStmt = "ab2=-(x + 5)";
+  // String testStmt = "(-x + 5)";
 
-  Parser parser = Parser(lex(testExpr));
+  // String testDecl = "fun f() = 1";
+  // String testDecl = "fun gh(x) = x + 1";
+  String testDecl = "(-x + 3) / 2";
 
-  print(parser.parseExpression());
+  Parser parser = Parser(lex(testDecl));
+
+  print(parser.parseDeclaration());
 }

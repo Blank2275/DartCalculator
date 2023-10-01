@@ -21,7 +21,8 @@ enum TokenType {
   ASSIGNMENT,
   LBRACKET,
   RBRACKET,
-  PERIOD
+  PERIOD,
+  DOLLAR
 }
 
 class Token {
