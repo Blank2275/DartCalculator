@@ -1,16 +1,12 @@
-import 'error.dart';
+import '../error.dart';
 import 'expression.dart';
-import 'token.dart';
+import '../Lexing/token.dart';
 
 class Parser {
   int current = 0;
   List<Token> tokens;
 
   Parser(this.tokens);
-
-  Expr parseExpression() {
-    return conjunction();
-  }
 
   bool isAtEnd() {
     return current >= tokens.length;
@@ -49,6 +45,10 @@ class Parser {
     parseError(message);
   }
 
+  Expr parseExpression() {
+    return conjunction();
+  }
+
   Expr value() {
     Token t = advance();
 
@@ -75,6 +75,20 @@ class Parser {
       expect(TokenType.RPAREN, "expected closing parenthace");
 
       return GroupingExpr(child);
+    } else if (t.type == TokenType.LBRACKET) {
+      List<Expr> elements = [];
+
+      if (!match([TokenType.RBRACKET])) {
+        elements.add(conjunction());
+
+        while (match([TokenType.COMMA])) {
+          elements.add(conjunction());
+        }
+
+        expect(TokenType.RBRACKET, "expecting closing bracket");
+      }
+
+      return ArrayExpr(elements);
     }
 
     return NullExpr();

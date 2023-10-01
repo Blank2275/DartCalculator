@@ -1,11 +1,11 @@
-import 'lexer.dart';
-import 'parser.dart';
+import 'Calc/Lexing/lexer.dart';
+import 'Calc/Lexing/token.dart';
+import 'Calc/Parsing/parser.dart';
 
 void main() {
-  String testExpr = "a - (3 * -x + sin(5) / pow(x, 2))";
+  String testExpr = "[0, 1, 5 * 7, sin(2)]";
   // String testExpr = "- x";
 
-  print(lex(testExpr));
   Parser parser = Parser(lex(testExpr));
 
   print(parser.parseExpression());

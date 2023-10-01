@@ -1,4 +1,4 @@
-import 'token.dart';
+import '../Lexing/token.dart';
 
 class Expr {
   String pretty(int level) {
@@ -153,6 +153,33 @@ class IdentifierExpr extends Expr {
   String pretty(int level) {
     String prefix = "    " * level;
     return "${prefix}Identifier (${this.value.value})";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
+class ArrayExpr extends Expr {
+  List<Expr> value;
+
+  ArrayExpr(this.value);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+
+    String elementsString = "${"    " * (level + 2)}[\n";
+    for (Expr element in value) {
+      elementsString += element.pretty(level + 2) + ",\n";
+    }
+    elementsString += "${"    " * (level + 2)}]";
+
+    return """${prefix}Array {
+${prefix + "    "}elements {
+${elementsString}
+${prefix + "    "}}
+${prefix}}""";
   }
 
   @override
