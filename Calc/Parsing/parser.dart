@@ -11,7 +11,7 @@ import 'statement.dart';
 class Parser {
   int current = 0;
   List<Token> tokens;
-  List<String> reservedWords = ["if", "else"];
+  List<String> reservedWords = ["if", "else", "fun"];
 
   Parser(this.tokens);
 
@@ -70,7 +70,7 @@ class Parser {
   }
 
   Decl parseDeclaration() {
-    if (peek().value == TokenType.IDENTIFIER_LITERAL) {
+    if (peek().type == TokenType.IDENTIFIER_LITERAL) {
       if (peek().value == "fun") {
         advance();
         return functionDeclaration();

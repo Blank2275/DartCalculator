@@ -24,7 +24,7 @@ void main() {
   // String testTernary = "a == 1 ? a : 1";
   // String testTernary = "5 + (3 - 7)";
 
-  Parser parser = Parser(lex(testTernary));
+  // Parser parser = Parser(lex(testTernary));
 
   print(parser.parseDeclaration());
 }
