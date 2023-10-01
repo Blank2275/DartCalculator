@@ -14,6 +14,29 @@ class Stmt {
   }
 }
 
+class IfElseStmt extends Stmt {
+  Expr condition;
+  Stmt onTrue;
+  Stmt onFalse;
+
+  IfElseStmt(this.condition, this.onTrue, this.onFalse);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+
+    return """${prefix}If (${condition.pretty(0)}){
+${onTrue.pretty(level + 1)}
+${prefix}} Else {
+${onFalse.pretty(level + 1)}
+${prefix}}""";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class AssignmentStmt extends Stmt {
   Token name;
   Expr value;

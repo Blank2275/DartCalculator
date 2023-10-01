@@ -9,6 +9,7 @@ import 'statement.dart';
 class Parser {
   int current = 0;
   List<Token> tokens;
+  List<String> reservedWords = ["if", "else"];
 
   Parser(this.tokens);
 
@@ -39,6 +40,8 @@ class Parser {
     if (isAtEnd()) return false;
 
     for (TokenType target in targets) {
+      if (peek().type == TokenType.IDENTIFIER_LITERAL &&
+          (reservedWords.contains(peek().value))) return false;
       if (peek().type == target) {
         advance();
         return true;
@@ -50,6 +53,16 @@ class Parser {
 
   void expect(TokenType type, String message) {
     if (match([type])) return;
+
+    parseError(message);
+  }
+
+  void expectIdentifier(String identifier, String message) {
+    if (peek().type == TokenType.IDENTIFIER_LITERAL &&
+        peek().value == identifier) {
+      advance();
+      return;
+    }
 
     parseError(message);
   }
@@ -101,12 +114,29 @@ class Parser {
 
   Stmt parseStatement() {
     if (peek().type == TokenType.IDENTIFIER_LITERAL) {
-      if (peekNext()?.type == TokenType.ASSIGNMENT) {
+      if (peek().value == "if") {
+        advance();
+        return parseIfElse();
+      } else if (peekNext()?.type == TokenType.ASSIGNMENT) {
         return assignment();
       }
     }
 
     return ExprStmt(parseExpression());
+  }
+
+  Stmt parseIfElse() {
+    expect(TokenType.LPAREN, "Expected opening '(' in if statement condition");
+    Expr condition = parseExpression();
+    expect(TokenType.RPAREN, "Expected closing ')' in if statement condition");
+
+    Stmt onTrue = parseStatement();
+
+    expectIdentifier("else", "Expected else case in if statement");
+
+    Stmt onFalse = parseStatement();
+
+    return IfElseStmt(condition, onTrue, onFalse);
   }
 
   Stmt assignment() {

@@ -10,9 +10,14 @@ void main() {
 
   // String testDecl = "fun f() = 1";
   // String testDecl = "fun gh(x) = x + 1";
-  String testDecl = "(-x + 3) / 2";
+  // String testDecl = "(-x + 3) / 2";
 
-  Parser parser = Parser(lex(testDecl));
+  // String testIf = "if (5 > a) a = a - 5 else a = a + 5";
+  // String testIf = "1 + if (a + b < c) a + b else c";
+  // String testIf = "if (2 > 1) 2";
+
+  // print(lex(testIf));
+  // Parser parser = Parser(lex(testIf));
 
   print(parser.parseDeclaration());
 }
