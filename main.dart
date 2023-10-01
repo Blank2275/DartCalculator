@@ -17,7 +17,14 @@ void main() {
   // String testIf = "if (2 > 1) 2";
 
   // print(lex(testIf));
-  // Parser parser = Parser(lex(testIf));
+
+  // String testTernary = "5 > a ? 5 : a";
+  // String testTernary = "(a > 1 ? 1 : 2) > a ? 5 : a";
+  // String testTernary = "5 > a ? 5 : (7 > a ? a : 7)";
+  // String testTernary = "a == 1 ? a : 1";
+  // String testTernary = "5 + (3 - 7)";
+
+  Parser parser = Parser(lex(testTernary));
 
   print(parser.parseDeclaration());
 }

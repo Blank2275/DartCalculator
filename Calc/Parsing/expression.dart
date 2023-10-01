@@ -58,6 +58,34 @@ ${prefix}}""";
   }
 }
 
+class TernaryExpr extends Expr {
+  Expr condition;
+  Expr onTrue;
+  Expr onFalse;
+
+  TernaryExpr(this.condition, this.onTrue, this.onFalse);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+    return """${prefix}Ternary {
+${prefix + "    "}condition {
+${condition.pretty(level + 2)}
+${prefix + "    "}}
+${prefix + "    "}true {
+${onTrue.pretty(level + 2)}
+${prefix + "    "}}
+${prefix + "    "}false {
+${onFalse.pretty(level + 2)}
+${prefix + "    "}}
+${prefix}}""";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class GroupingExpr extends Expr {
   Expr child;
 

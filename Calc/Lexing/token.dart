@@ -22,7 +22,9 @@ enum TokenType {
   LBRACKET,
   RBRACKET,
   PERIOD,
-  DOLLAR
+  DOLLAR,
+  TERNARY,
+  COLON
 }
 
 class Token {

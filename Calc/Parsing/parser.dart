@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../error.dart';
 import 'Parameter.dart';
 import 'Type.dart';
@@ -68,8 +70,9 @@ class Parser {
   }
 
   Decl parseDeclaration() {
-    if (match([TokenType.IDENTIFIER_LITERAL])) {
-      if (previous().value == "fun") {
+    if (peek().value == TokenType.IDENTIFIER_LITERAL) {
+      if (peek().value == "fun") {
+        advance();
         return functionDeclaration();
       }
     }
@@ -150,7 +153,7 @@ class Parser {
   }
 
   Expr parseExpression() {
-    return conjunction();
+    return ternary();
   }
 
   Expr value() {
@@ -164,10 +167,10 @@ class Parser {
       } else {
         if (match([TokenType.LPAREN])) {
           List<Expr> arguments = [];
-          arguments.add(conjunction());
+          arguments.add(ternary());
 
           while (match([TokenType.COMMA])) {
-            arguments.add(conjunction());
+            arguments.add(ternary());
           }
           expect(TokenType.RPAREN, "expected closing parenthace");
           return FuncCallExpr(t, arguments);
@@ -175,7 +178,7 @@ class Parser {
         return IdentifierExpr(t);
       }
     } else if (t.type == TokenType.LPAREN) {
-      Expr child = conjunction();
+      Expr child = ternary();
       expect(TokenType.RPAREN, "expected closing parenthace");
 
       return GroupingExpr(child);
@@ -183,10 +186,10 @@ class Parser {
       List<Expr> elements = [];
 
       if (!match([TokenType.RBRACKET])) {
-        elements.add(conjunction());
+        elements.add(ternary());
 
         while (match([TokenType.COMMA])) {
-          elements.add(conjunction());
+          elements.add(ternary());
         }
 
         expect(TokenType.RBRACKET, "expecting closing bracket");
@@ -278,6 +281,22 @@ class Parser {
       Expr right = equality();
 
       expr = BinaryExpr(expr, right, op);
+    }
+
+    return expr;
+  }
+
+  Expr ternary() {
+    Expr expr = conjunction();
+
+    if (match([TokenType.TERNARY])) {
+      Expr onTrue = ternary();
+
+      expect(TokenType.COLON, "Expected ':' in ternary operation");
+
+      Expr onFalse = ternary();
+
+      expr = TernaryExpr(expr, onTrue, onFalse);
     }
 
     return expr;
