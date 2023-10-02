@@ -1,4 +1,5 @@
 import '../Lexing/token.dart';
+import 'block.dart';
 import 'expression.dart';
 
 class Stmt {
@@ -6,6 +7,63 @@ class Stmt {
     String prefix = "    " * level;
 
     return "Stmt";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
+class IfElifElseStmt extends Stmt {
+  List<Expr> conditions;
+  List<Block> blocks;
+
+  IfElifElseStmt(this.conditions, this.blocks);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+
+    String conditionsStr = "";
+
+    for (int i = 0; i < conditions.length; i++) {
+      if (i == 0) {
+        conditionsStr += "${prefix}if(\n${conditions[i]}\n)\n";
+        conditionsStr += this.blocks[i].pretty(level + 1);
+        conditionsStr += "${prefix}end\n";
+      } else {
+        conditionsStr += "${prefix}elif(\n${conditions[i]}\n)\n";
+        conditionsStr += this.blocks[i].pretty(level + 1);
+        conditionsStr += "${prefix}end\n";
+      }
+    }
+
+    if (conditions.length < blocks.length) {
+      conditionsStr += "${prefix}else\n";
+      conditionsStr += this.blocks[this.blocks.length - 1].pretty(level + 1);
+      conditionsStr += "\n${prefix}end\n";
+    }
+
+    return conditionsStr;
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
+class PrintStmt extends Stmt {
+  Expr value;
+
+  PrintStmt(this.value);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+
+    return """print\n
+$value
+""";
   }
 
   @override

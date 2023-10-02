@@ -7,6 +7,22 @@ class Context {
 
   Map<String, Func> functions = {};
 
+  void addBlockLevel() {
+    if (stack.length == 0) {
+      global.addBlockLevel();
+    } else {
+      stack[stack.length - 1].addBlockLevel();
+    }
+  }
+
+  void popBlockLevel() {
+    if (stack.length == 0) {
+      global.popBlockLevel();
+    } else {
+      stack[stack.length - 1].popBlockLevel();
+    }
+  }
+
   void addStackFrame() {
     stack.add(StackFrame());
   }
@@ -55,9 +71,27 @@ class Context {
 
 class StackFrame {
   Map<String, Value> variables = {};
+  Map<String, int> blockLevels = {};
+
+  void addBlockLevel() {
+    for (String key in blockLevels.keys) {
+      blockLevels[key] = blockLevels[key]! + 1;
+    }
+  }
+
+  void popBlockLevel() {
+    for (String key in blockLevels.keys) {
+      blockLevels[key] = blockLevels[key]! - 1;
+
+      if (blockLevels[key]! == 0) {
+        blockLevels.remove(key);
+      }
+    }
+  }
 
   void setVariable(String name, Value value) {
     variables[name] = value;
+    blockLevels[name] = 1;
   }
 
   Value getVariable(String name) {

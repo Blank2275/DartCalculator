@@ -31,6 +31,14 @@ class Value {
     return NullValue();
   }
 
+  Value eq(Value other) {
+    return NullValue();
+  }
+
+  Value ne(Value other) {
+    return NullValue();
+  }
+
   Value and(Value other) {
     return NullValue();
   }
@@ -77,6 +85,22 @@ class BooleanValue extends Value {
 
   Value le(Value other) {
     return NullValue();
+  }
+
+  Value eq(Value other) {
+    if (other is BooleanValue) {
+      return BooleanValue(value == other.value);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is BooleanValue) {
+      return BooleanValue(value != other.value);
+    }
+
+    return BooleanValue(true);
   }
 
   Value and(Value other) {
@@ -230,6 +254,22 @@ class NumberValue extends Value {
     return NullValue();
   }
 
+  Value eq(Value other) {
+    if (other is NumberValue) {
+      return BooleanValue(value == other.value);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is NumberValue) {
+      return BooleanValue(value != other.value);
+    }
+
+    return BooleanValue(true);
+  }
+
   Value and(Value other) {
     return NullValue();
   }
@@ -343,6 +383,36 @@ class ArrayValue extends Value {
       return ArrayValue(res);
     }
     return NullValue();
+  }
+
+  Value eq(Value other) {
+    if (other is ArrayValue) {
+      if (value.length != other.value.length) return BooleanValue(false);
+
+      for (int i = 0; i < value.length; i++) {
+        if (!(value[i].eq(other.value[i]) as BooleanValue).value)
+          return BooleanValue(false);
+      }
+
+      return BooleanValue(true);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is ArrayValue) {
+      if (value.length != other.value.length) return BooleanValue(false);
+
+      for (int i = 0; i < value.length; i++) {
+        if (!(value[i].eq(other.value[i]) as BooleanValue).value)
+          return BooleanValue(true);
+      }
+
+      return BooleanValue(false);
+    }
+
+    return BooleanValue(true);
   }
 
   Value and(Value other) {

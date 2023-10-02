@@ -1,5 +1,6 @@
 import '../Lexing/token.dart';
 import '../Parsing/Parameter.dart';
+import '../Parsing/block.dart';
 import '../Parsing/declaration.dart';
 import '../Parsing/expression.dart';
 import '../Parsing/statement.dart';
@@ -9,6 +10,18 @@ import 'value.dart';
 
 class Executer {
   StandardContext context = StandardContext();
+
+  void executeBlock(Block block) {
+    for (Stmt stmt in block.statements) {
+      handleStatement(stmt);
+    }
+  }
+
+  void runProgram(List<Decl> program) {
+    for (Decl decl in program) {
+      executeDeclaration(decl);
+    }
+  }
 
   Value executeDeclaration(Decl tree) {
     if (tree is StmtDecl) {
@@ -54,6 +67,26 @@ class Executer {
       } else {
         handleStatement(onFalse);
       }
+    } else if (stmt is IfElifElseStmt) {
+      for (int i = 0; i < stmt.conditions.length; i++) {
+        Value conditionValue = handleExpression(stmt.conditions[i]);
+
+        if (!(conditionValue is BooleanValue)) return NullValue();
+
+        if (conditionValue.value) {
+          executeBlock(stmt.blocks[i]);
+
+          return NullValue();
+        }
+      }
+
+      if (stmt.conditions.length < stmt.blocks.length) {
+        executeBlock(stmt.blocks[stmt.blocks.length - 1]);
+        return NullValue();
+      }
+    } else if (stmt is PrintStmt) {
+      Expr value = stmt.value;
+      print(handleExpression(value));
     }
 
     return NullValue();
@@ -82,6 +115,8 @@ class Executer {
       return handleExpression(expr.child);
     } else if (expr is NumberExpr) {
       return NumberValue(expr.getDoubleValue());
+    } else if (expr is BooleanExpr) {
+      return BooleanValue(expr.value.value == "true" ? true : false);
     } else if (expr is IdentifierExpr) {
       String name = expr.value.value!;
 
@@ -190,6 +225,20 @@ class Executer {
       Value right = handleExpression(expr.right);
 
       return left.ge(right);
+    }
+
+    if (expr.op.type == TokenType.EQ) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.eq(right);
+    }
+
+    if (expr.op.type == TokenType.NE) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.ne(right);
     }
 
     if (expr.op.type == TokenType.AND) {
