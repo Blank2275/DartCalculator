@@ -16,20 +16,28 @@ class Context {
   }
 
   void setVariable(String name, Value value) {
-    if (stack.isEmpty) global.setVariable(name, value);
-
-    stack[stack.length - 1].setVariable(name, value);
+    if (stack.length == 0) {
+      global.setVariable(name, value);
+    } else {
+      stack[stack.length - 1].setVariable(name, value);
+    }
   }
 
   Value getVariable(String name) {
-    Value? stackValue = stack[stack.length - 1].getVariable(name);
-
-    if (stackValue is NullValue) {
-      Value globalValue = stack[stack.length - 1].getVariable(name);
+    if (stack.length == 0) {
+      Value globalValue = global.getVariable(name);
 
       return globalValue;
     } else {
-      return stackValue;
+      Value? stackValue = stack[stack.length - 1].getVariable(name);
+
+      if (stackValue is NullValue) {
+        Value globalValue = global.getVariable(name);
+
+        return globalValue;
+      } else {
+        return stackValue;
+      }
     }
   }
 

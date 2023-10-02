@@ -40,6 +40,20 @@ class Executer {
 
       context.setVariable(name, value);
       return value;
+    } else if (stmt is IfElseStmt) {
+      Expr condition = stmt.condition;
+      Stmt onTrue = stmt.onTrue;
+      Stmt onFalse = stmt.onFalse;
+
+      Value conditionValue = handleExpression(condition);
+
+      if (!(conditionValue is BooleanValue)) return NullValue();
+
+      if (conditionValue.value) {
+        handleStatement(onTrue);
+      } else {
+        handleStatement(onFalse);
+      }
     }
 
     return NullValue();
@@ -48,6 +62,20 @@ class Executer {
   Value handleExpression(Expr expr) {
     if (expr is BinaryExpr) {
       return handleBinary(expr);
+    } else if (expr is TernaryExpr) {
+      Expr condition = expr.condition;
+      Expr onTrue = expr.onTrue;
+      Expr onFalse = expr.onFalse;
+
+      Value conditionValue = handleExpression(condition);
+
+      if (!(conditionValue is BooleanValue)) return NullValue();
+
+      if (conditionValue.value) {
+        return handleExpression(onTrue);
+      } else {
+        return handleExpression(onFalse);
+      }
     } else if (expr is UnaryExpr) {
       return handleUnary(expr);
     } else if (expr is GroupingExpr) {
@@ -81,7 +109,6 @@ class Executer {
 
       if (func is ExprFunc) {
         context.addStackFrame();
-        print(context.stack.length);
         List<Parameter> parameters = func.parameters;
 
         for (int i = 0; i < parameters.length; i++) {
@@ -91,7 +118,6 @@ class Executer {
         Value val = handleExpression(func.expr);
 
         context.popStackFrame();
-        print(context.stack.length);
 
         return val;
       } else {
