@@ -1,5 +1,6 @@
 import '../Lexing/token.dart';
 import 'Parameter.dart';
+import 'expression.dart';
 import 'statement.dart';
 
 class Decl {
@@ -33,7 +34,7 @@ class StmtDecl extends Decl {
 class FuncDecl extends Decl {
   Token name;
   List<Parameter> parameters;
-  Stmt body;
+  Expr body;
 
   FuncDecl(this.name, this.parameters, this.body);
 

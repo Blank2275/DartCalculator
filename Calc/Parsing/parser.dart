@@ -99,7 +99,7 @@ class Parser {
 
     expect(TokenType.ASSIGNMENT, "Invalid function declaration");
 
-    Stmt body = parseStatement();
+    Expr body = parseExpression();
 
     return FuncDecl(name, parameters, body);
   }
