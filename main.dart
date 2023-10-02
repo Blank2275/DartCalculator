@@ -7,17 +7,11 @@ void main() {
   Runner runner = Runner();
 
   String testScript = """
-a = 0
-if (1 + 1 != 2) do
-  a = 2
+if (true) do
+  x = 5
+  print x
 end
-elif (1 + 1 == 3) do
-  a = 3
-end
-else
-  a = -1
-end
-print a * 2
+print x
 """;
 
   runner.runScript(testScript);

@@ -80,11 +80,13 @@ class StackFrame {
   }
 
   void popBlockLevel() {
-    for (String key in blockLevels.keys) {
+    List<String> keys = blockLevels.keys.toList();
+    for (String key in keys) {
       blockLevels[key] = blockLevels[key]! - 1;
 
       if (blockLevels[key]! == 0) {
         blockLevels.remove(key);
+        variables.remove(key);
       }
     }
   }

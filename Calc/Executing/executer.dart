@@ -74,19 +74,24 @@ class Executer {
         if (!(conditionValue is BooleanValue)) return NullValue();
 
         if (conditionValue.value) {
+          context.addBlockLevel();
           executeBlock(stmt.blocks[i]);
+          context.popBlockLevel();
 
           return NullValue();
         }
       }
 
       if (stmt.conditions.length < stmt.blocks.length) {
+        context.addBlockLevel();
         executeBlock(stmt.blocks[stmt.blocks.length - 1]);
+        context.popBlockLevel();
+
         return NullValue();
       }
     } else if (stmt is PrintStmt) {
       Expr value = stmt.value;
-      print(handleExpression(value));
+      print(handleExpression(value)); // keep
     }
 
     return NullValue();
