@@ -138,6 +138,48 @@ class Executer {
       return left.div(right);
     }
 
+    if (expr.op.type == TokenType.LT) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.lt(right);
+    }
+
+    if (expr.op.type == TokenType.GT) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.gt(right);
+    }
+
+    if (expr.op.type == TokenType.LE) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.le(right);
+    }
+
+    if (expr.op.type == TokenType.GE) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.ge(right);
+    }
+
+    if (expr.op.type == TokenType.AND) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.and(right);
+    }
+
+    if (expr.op.type == TokenType.OR) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      return left.or(right);
+    }
+
     return NullValue();
   }
 }
