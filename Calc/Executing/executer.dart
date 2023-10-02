@@ -46,6 +46,15 @@ class Executer {
       String name = expr.value.value!;
 
       return context.getVariable(name);
+    } else if (expr is ArrayExpr) {
+      List<Expr> elements = expr.value;
+      List<Value> values = [];
+
+      for (Expr element in elements) {
+        values.add(handleExpression(element));
+      }
+
+      return ArrayValue(values);
     }
 
     return NullValue();
