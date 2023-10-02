@@ -2,17 +2,34 @@ import '../Lexing/token.dart';
 import '../Parsing/declaration.dart';
 import '../Parsing/expression.dart';
 import '../Parsing/statement.dart';
+import 'context.dart';
 import 'value.dart';
 
 class Executer {
+  Context context = Context();
+
   Value executeDeclaration(Decl tree) {
     if (tree is StmtDecl) {
       Stmt stmt = tree.stmt;
-      if (stmt is ExprStmt) {
-        Expr expr = stmt.expr;
 
-        return handleExpression(expr);
-      }
+      return handleStatement(stmt);
+    }
+
+    return NullValue();
+  }
+
+  Value handleStatement(Stmt stmt) {
+    if (stmt is ExprStmt) {
+      Expr expr = stmt.expr;
+
+      return handleExpression(expr);
+    } else if (stmt is AssignmentStmt) {
+      String name = stmt.name.value!;
+      Expr expr = stmt.value;
+      Value value = handleExpression(expr);
+
+      context.setVariable(name, value);
+      return value;
     }
 
     return NullValue();
@@ -25,13 +42,16 @@ class Executer {
       return handleExpression(expr.child);
     } else if (expr is NumberExpr) {
       return NumberValue(expr.getDoubleValue());
+    } else if (expr is IdentifierExpr) {
+      String name = expr.value.value!;
+
+      return context.getVariable(name);
     }
 
     return NullValue();
   }
 
   Value handleBinary(BinaryExpr expr) {
-    print(expr);
     if (expr.op.type == TokenType.ADD) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);

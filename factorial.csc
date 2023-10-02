@@ -1,4 +1,4 @@
-#out state fun factorial(number n) {
+#export state fun factorial(number n) {
     if (n <= 2) do
         return n
     end
@@ -7,5 +7,5 @@
 }
 
 // in calculator: 
-// import factorial
+// #import factorial
 // factorial(10)
