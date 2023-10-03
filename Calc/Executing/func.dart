@@ -73,7 +73,7 @@ class AddFunc extends Func {
   @override
   Value _evaluate(List<Value> arguments) {
     (arguments[0] as ArrayValue).value.add(arguments[1]);
-    return NullValue();
+    return (arguments[0] as ArrayValue);
   }
 }
 
