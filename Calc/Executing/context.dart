@@ -42,6 +42,18 @@ class Context {
   }
 
   Value getVariable(String name) {
+    Value value = lookupVariable(name);
+
+    if (value is NullValue) return NullValue();
+    if (value is EmptyValue) return EmptyValue();
+    if (value is NumberValue) return NumberValue.clone(value);
+    if (value is BooleanValue) return BooleanValue.clone(value);
+    if (value is ArrayValue) return ArrayValue.clone(value);
+
+    return NullValue();
+  }
+
+  Value lookupVariable(String name) {
     if (stack.length == 0) {
       Value globalValue = global.getVariable(name);
 
@@ -119,5 +131,6 @@ class StandardContext extends Context {
     setFunction("get", GetFunc());
     setFunction("set", SetFunc());
     setFunction("add", AddFunc());
+    setFunction("range", RangeFunc());
   }
 }

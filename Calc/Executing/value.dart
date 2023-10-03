@@ -1,4 +1,8 @@
 class Value {
+  Value();
+
+  Value.clone(Value value) : this();
+
   Value add(Value other) {
     return NullValue();
   }
@@ -49,18 +53,28 @@ class Value {
 }
 
 class NullValue extends Value {
+  NullValue();
+
+  NullValue.clone(NullValue other) : this();
+
   @override
   String toString() {
     return "null";
   }
 }
 
-class EmptyValue extends Value {}
+class EmptyValue extends Value {
+  EmptyValue();
+
+  EmptyValue.clone(EmptyValue other) : this();
+}
 
 class BooleanValue extends Value {
   bool value;
 
   BooleanValue(this.value);
+
+  BooleanValue.clone(BooleanValue other) : this(other.value);
 
   Value add(Value other) {
     return NullValue();
@@ -136,6 +150,8 @@ class NumberValue extends Value {
   double value;
 
   NumberValue(this.value);
+
+  NumberValue.clone(NumberValue other) : this(other.value);
 
   Value add(Value other) {
     if (other is NumberValue) {
@@ -295,6 +311,8 @@ class ArrayValue extends Value {
   List<Value> value;
 
   ArrayValue(this.value);
+
+  ArrayValue.clone(ArrayValue other) : this(List.from(other.value));
 
   Value add(Value other) {
     List<Value> res = [];

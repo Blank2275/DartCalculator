@@ -146,3 +146,39 @@ class TanFunc extends Func {
     return NumberValue(tan(x));
   }
 }
+
+class RangeFunc extends Func {
+  RangeFunc()
+      : super([
+          Parameter(ValueType("number"), "start"),
+          Parameter(ValueType("number"), "stop"),
+          Parameter(ValueType("number"), "step")
+        ]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    List<Value> range = [];
+
+    double start = (arguments[0] as NumberValue).value;
+    double stop = (arguments[1] as NumberValue).value;
+    double step = (arguments[2] as NumberValue).value;
+
+    if (start == stop ||
+        (start < stop && step < 0) ||
+        (start > stop && step > 0)) return ArrayValue([]);
+
+    if (start < stop) {
+      while (start < stop) {
+        range.add(NumberValue(start));
+        start += step;
+      }
+    } else {
+      while (start > stop) {
+        range.add(NumberValue(start));
+        start += step;
+      }
+    }
+
+    return ArrayValue(range);
+  }
+}

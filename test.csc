@@ -1,10 +1,7 @@
-fun test(number c) do
-    if(a + b >= c) do
-        return f((a + b) / c)
-    end
-    else do 
-        return (a + b) / c
-    end
-end
+a = []
 
-#out test
+b = a
+
+add(a, 1)
+
+print a

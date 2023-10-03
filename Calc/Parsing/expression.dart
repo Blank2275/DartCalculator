@@ -173,6 +173,22 @@ class BooleanExpr extends Expr {
   }
 }
 
+class ReferenceExpr extends Expr {
+  Token value;
+
+  ReferenceExpr(this.value);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+    return "${prefix}Reference (${this.value.value})";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class IdentifierExpr extends Expr {
   Token value;
 

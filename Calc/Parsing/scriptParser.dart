@@ -273,6 +273,13 @@ class ScriptParser {
 
     if (t.type == TokenType.NUMBER_LITERAL) {
       return NumberExpr(t);
+    } else if (t.type == TokenType.DOLLAR) {
+      advance();
+      expect(TokenType.IDENTIFIER_LITERAL, "Expected variable to reference");
+
+      String name = previous().value!;
+
+      return ReferenceExpr(previous());
     } else if (t.type == TokenType.IDENTIFIER_LITERAL) {
       if (t.value == "true" || t.value == "false") {
         return BooleanExpr(t);
