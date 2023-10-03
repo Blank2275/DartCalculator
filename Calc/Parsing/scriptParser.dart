@@ -130,6 +130,9 @@ class ScriptParser {
       if (peek().value == "if") {
         advance();
         return parseIfElse();
+      } else if (peek().value == "for") {
+        advance();
+        return parseForLoop();
       } else if (peekNext()?.type == TokenType.ASSIGNMENT) {
         return assignment();
       } else if (peek().value == "print") {
@@ -140,6 +143,31 @@ class ScriptParser {
     }
 
     return ExprStmt(parseExpression());
+  }
+
+  Stmt parseForLoop() {
+    expect(TokenType.LPAREN, "expected '(' in for loop");
+
+    Expr iterator = parseExpression();
+
+    if (!(iterator is IdentifierExpr)) {
+      parseError("invalid iterator in for loop");
+      return NullStmt();
+    }
+
+    expectIdentifier("in", "invalid for loop syntax");
+
+    Expr value = parseExpression();
+
+    expect(TokenType.RPAREN, "expected ')' in for loop");
+
+    expectIdentifier("do", "invalid for loop syntax");
+
+    Block body = parseBlock();
+
+    expectIdentifier("end", "expected end to for loop");
+
+    return ForStmt(iterator, value, body);
   }
 
   Stmt parseIfElse() {
@@ -174,7 +202,11 @@ class ScriptParser {
 
     if (conditions.length == 1) {
       if (peek().type == TokenType.IDENTIFIER_LITERAL &&
-          peek().value == "else") {}
+          peek().value == "else") {
+        advance();
+        blocks.add(parseBlock());
+        expectIdentifier("end", "Expected end after else case");
+      }
     } else {
       expectIdentifier("else", "Expected else case in if else statement");
 

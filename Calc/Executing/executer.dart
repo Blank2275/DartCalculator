@@ -67,6 +67,22 @@ class Executer {
       } else {
         handleStatement(onFalse);
       }
+    } else if (stmt is ForStmt) {
+      Value array = handleExpression(stmt.value);
+      String iteratorName = stmt.iterator.value.value!;
+
+      if (!(array is ArrayValue)) {
+        return NullValue();
+      }
+
+      for (Value element in array.value) {
+        context.addBlockLevel();
+        context.setVariable(iteratorName, element);
+
+        executeBlock(stmt.body);
+
+        context.popBlockLevel();
+      }
     } else if (stmt is IfElifElseStmt) {
       for (int i = 0; i < stmt.conditions.length; i++) {
         Value conditionValue = handleExpression(stmt.conditions[i]);

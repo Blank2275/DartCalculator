@@ -72,6 +72,43 @@ $value
   }
 }
 
+class ForStmt extends Stmt {
+  Expr value;
+  IdentifierExpr iterator;
+  Block body;
+
+  ForStmt(this.iterator, this.value, this.body);
+
+  String pretty(int level) {
+    return """for $iterator in $value do
+$body
+end""";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
+class WhileStmt extends Stmt {
+  Expr condition;
+  Block body;
+
+  WhileStmt(this.condition, this.body);
+
+  String pretty(int level) {
+    return """while $condition do
+$body
+end""";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class IfElseStmt extends Stmt {
   Expr condition;
   Stmt onTrue;

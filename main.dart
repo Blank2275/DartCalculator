@@ -7,12 +7,18 @@ void main() {
   Runner runner = Runner();
 
   String testScript = """
-if (true) do
-  x = 5
-  print x
+arr = [0, 1, 2, 3, 4 + 1]
+
+for (i in arr) do
+  for (j in arr) do
+    if (i > j) do
+      print j / i
+    end
+  end
 end
-print x
+print i
 """;
 
+  // print(ScriptParser(lex(testScript)).parseAll());
   runner.runScript(testScript);
 }
