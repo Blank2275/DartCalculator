@@ -7,6 +7,8 @@ class Context {
 
   Map<String, Func> functions = {};
 
+  Value returnResult = EmptyValue();
+
   void addBlockLevel() {
     if (stack.length == 0) {
       global.addBlockLevel();
@@ -93,7 +95,10 @@ class StackFrame {
 
   void setVariable(String name, Value value) {
     variables[name] = value;
-    blockLevels[name] = 1;
+
+    if (blockLevels[name] == null) {
+      blockLevels[name] = 1;
+    }
   }
 
   Value getVariable(String name) {
@@ -107,5 +112,12 @@ class StackFrame {
 class StandardContext extends Context {
   StandardContext() {
     setFunction("sin", SinFunc());
+    setFunction("cos", CosFunc());
+    setFunction("tan", TanFunc());
+    setFunction("add", AddFunc());
+    setFunction("len", LenFunc());
+    setFunction("get", GetFunc());
+    setFunction("set", SetFunc());
+    setFunction("add", AddFunc());
   }
 }

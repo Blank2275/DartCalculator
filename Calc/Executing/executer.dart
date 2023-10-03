@@ -12,8 +12,11 @@ class Executer {
   StandardContext context = StandardContext();
 
   void executeBlock(Block block) {
-    for (Stmt stmt in block.statements) {
-      handleStatement(stmt);
+    int i = 0;
+    while (i < block.statements.length && context.returnResult is EmptyValue) {
+      handleStatement(block.statements[i]);
+
+      i += 1;
     }
   }
 
@@ -34,6 +37,14 @@ class Executer {
       Expr body = tree.body;
 
       ExprFunc func = ExprFunc(parameters, body);
+
+      context.setFunction(name, func);
+    } else if (tree is ScriptFuncDecl) {
+      String name = tree.name.value!;
+      List<Parameter> parameters = tree.parameters;
+      Block body = tree.body;
+
+      ScriptFunc func = ScriptFunc(parameters, body);
 
       context.setFunction(name, func);
     }
@@ -83,6 +94,14 @@ class Executer {
 
         context.popBlockLevel();
       }
+    } else if (stmt is WhileStmt) {
+      Expr condition = stmt.condition;
+
+      while ((handleExpression(condition) as BooleanValue).value) {
+        context.addBlockLevel();
+        executeBlock(stmt.body);
+        context.popBlockLevel();
+      }
     } else if (stmt is IfElifElseStmt) {
       for (int i = 0; i < stmt.conditions.length; i++) {
         Value conditionValue = handleExpression(stmt.conditions[i]);
@@ -108,6 +127,9 @@ class Executer {
     } else if (stmt is PrintStmt) {
       Expr value = stmt.value;
       print(handleExpression(value)); // keep
+    } else if (stmt is ReturnStmt) {
+      Expr value = stmt.value;
+      context.returnResult = handleExpression(value);
     }
 
     return NullValue();
@@ -176,6 +198,26 @@ class Executer {
         context.popStackFrame();
 
         return val;
+      } else if (func is ScriptFunc) {
+        context.addStackFrame();
+        List<Parameter> parameters = func.parameters;
+
+        for (int i = 0; i < parameters.length; i++) {
+          context.setVariable(parameters[i].name, arguments[i]);
+        }
+
+        Block body = func.body;
+
+        executeBlock(body);
+
+        Value result = context.returnResult;
+        context.returnResult = EmptyValue();
+
+        if (result is EmptyValue) return NullValue();
+
+        context.popStackFrame();
+
+        return result;
       } else {
         return func.evaluate(arguments);
       }

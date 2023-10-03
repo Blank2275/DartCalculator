@@ -91,6 +91,21 @@ end""";
   }
 }
 
+class ReturnStmt extends Stmt {
+  Expr value;
+
+  ReturnStmt(this.value);
+
+  String pretty(int level) {
+    return "return $value";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class WhileStmt extends Stmt {
   Expr condition;
   Block body;

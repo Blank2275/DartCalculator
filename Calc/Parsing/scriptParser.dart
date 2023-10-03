@@ -107,11 +107,13 @@ class ScriptParser {
       expect(TokenType.RPAREN, "Invalid function declaration");
     }
 
-    expect(TokenType.ASSIGNMENT, "Invalid function declaration");
+    expectIdentifier("do", "Invalid function declaration");
 
-    Expr body = parseExpression();
+    Block body = parseBlock();
 
-    return FuncDecl(name, parameters, body);
+    expectIdentifier("end", "Expected end to function declaration");
+
+    return ScriptFuncDecl(name, parameters, body);
   }
 
   Parameter parseParameter() {
@@ -133,16 +135,39 @@ class ScriptParser {
       } else if (peek().value == "for") {
         advance();
         return parseForLoop();
+      } else if (peek().value == "while") {
+        advance();
+        return parseWhileLoop();
       } else if (peekNext()?.type == TokenType.ASSIGNMENT) {
         return assignment();
       } else if (peek().value == "print") {
         advance();
         Expr value = parseExpression();
         return PrintStmt(value);
+      } else if (peek().value == "return") {
+        advance();
+        Expr value = parseExpression();
+        return ReturnStmt(value);
       }
     }
 
     return ExprStmt(parseExpression());
+  }
+
+  Stmt parseWhileLoop() {
+    expect(TokenType.LPAREN, "expected '(' in while loop");
+
+    Expr condition = parseExpression();
+
+    expect(TokenType.RPAREN, "expected ')' in while loop");
+
+    expectIdentifier("do", "invalid while loop syntax");
+
+    Block body = parseBlock();
+
+    expectIdentifier("end", "expected end to while loop");
+
+    return WhileStmt(condition, body);
   }
 
   Stmt parseForLoop() {
@@ -251,6 +276,8 @@ class ScriptParser {
     } else if (t.type == TokenType.IDENTIFIER_LITERAL) {
       if (t.value == "true" || t.value == "false") {
         return BooleanExpr(t);
+      } else if (t.value == "null") {
+        return NullExpr();
       } else {
         if (match([TokenType.LPAREN])) {
           List<Expr> arguments = [];

@@ -48,7 +48,14 @@ class Value {
   }
 }
 
-class NullValue extends Value {}
+class NullValue extends Value {
+  @override
+  String toString() {
+    return "null";
+  }
+}
+
+class EmptyValue extends Value {}
 
 class BooleanValue extends Value {
   bool value;
