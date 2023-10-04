@@ -291,7 +291,6 @@ class Executer {
       Value right = handleExpression(expr.right);
 
       val = left.add(right);
-      print((val as ErrorValue).message);
     }
     if (expr.op.type == TokenType.SUB) {
       Value left = handleExpression(expr.left);
