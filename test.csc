@@ -12,9 +12,17 @@ fun remove(array arr, number index) do
 end
 
 fun zeros(array size) do
-    arr = [0, 1, 2, 3]
-    print remove(arr, 2)
+    arr = []
+    for (i in range(0, get(size, 0), 1)) do 
+        if (len(size) == 1) do 
+            arr = add(arr, 0)
+        end
+        else
+            arr = add(arr, zeros(remove(size, 0))) 
+        end
+    end
 
+    return arr
 end
 
-zeros([])
+print zeros([2, 3]) + 1

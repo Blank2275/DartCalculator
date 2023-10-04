@@ -14,7 +14,7 @@ class Func {
 
   Value evaluate(List<Value> arguments) {
     if (!validArguments(arguments, parameters)) {
-      return NullValue();
+      return ErrorValue.type("Runtime Error", "invalid arguments");
     }
 
     return _evaluate(arguments);
@@ -97,7 +97,14 @@ class GetFunc extends Func {
   @override
   Value _evaluate(List<Value> arguments) {
     List<Value> elements = (arguments[0] as ArrayValue).value;
-    return elements[(arguments[1] as NumberValue).value.round()];
+    int index = (arguments[1] as NumberValue).value.round();
+
+    if (index < 0 || index >= elements.length) {
+      return ErrorValue.type("Runtime Error",
+          "index $index out of bounds for array of length ${elements.length}");
+    }
+
+    return elements[index];
   }
 }
 
@@ -112,7 +119,14 @@ class SetFunc extends Func {
   @override
   Value _evaluate(List<Value> arguments) {
     List<Value> elements = (arguments[0] as ArrayValue).value;
-    elements[(arguments[1] as NumberValue).value.round()] = arguments[2];
+    int index = (arguments[1] as NumberValue).value.round();
+
+    if (index < 0 || index >= elements.length) {
+      return ErrorValue.type("Runtime Error",
+          "index $index out of bounds for array of length ${elements.length}");
+    }
+
+    elements[index] = arguments[2];
     return NullValue();
   }
 }

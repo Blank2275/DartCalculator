@@ -10,10 +10,23 @@ import 'value.dart';
 
 class Executer {
   StandardContext context = StandardContext();
+  bool isRunning = true;
+
+  void runtimeError(String message) {
+    print("Runtime Error: $message");
+    isRunning = false;
+  }
+
+  void typeError(String message) {
+    print("Type Error: $message");
+    isRunning = false;
+  }
 
   void executeBlock(Block block) {
     int i = 0;
-    while (i < block.statements.length && context.returnResult is EmptyValue) {
+    while (i < block.statements.length &&
+        context.returnResult is EmptyValue &&
+        isRunning) {
       handleStatement(block.statements[i]);
 
       i += 1;
@@ -21,8 +34,10 @@ class Executer {
   }
 
   void runProgram(List<Decl> program) {
+    isRunning = true;
     for (Decl decl in program) {
       executeDeclaration(decl);
+      if (!isRunning) break;
     }
   }
 
@@ -126,7 +141,11 @@ class Executer {
       }
     } else if (stmt is PrintStmt) {
       Expr value = stmt.value;
-      print(handleExpression(value)); // keep
+      Value val = handleExpression(value);
+
+      if (!isRunning) return NullValue();
+
+      print(val); // keep
     } else if (stmt is ReturnStmt) {
       Expr value = stmt.value;
       context.returnResult = handleExpression(value);
@@ -164,12 +183,20 @@ class Executer {
       String name = expr.value.value!;
 
       return context.getVariable(name);
+    } else if (expr is ReferenceExpr) {
+      String name = expr.value.value!;
+
+      return context.getReferencedVariable(name);
     } else if (expr is ArrayExpr) {
       List<Expr> elements = expr.value;
       List<Value> values = [];
 
       for (Expr element in elements) {
-        values.add(handleExpression(element));
+        Value val = handleExpression(element);
+        if (val is ErrorValue) {
+          typeError(val.message);
+        }
+        values.add(val);
       }
 
       return ArrayValue(values);
@@ -185,6 +212,8 @@ class Executer {
         arguments.add(handleExpression(element));
       }
 
+      Value? val = null;
+
       if (func is ExprFunc) {
         context.addStackFrame();
         List<Parameter> parameters = func.parameters;
@@ -193,11 +222,9 @@ class Executer {
           context.setVariable(parameters[i].name, arguments[i]);
         }
 
-        Value val = handleExpression(func.expr);
+        val = handleExpression(func.expr);
 
         context.popStackFrame();
-
-        return val;
       } else if (func is ScriptFunc) {
         context.addStackFrame();
         List<Parameter> parameters = func.parameters;
@@ -210,17 +237,25 @@ class Executer {
 
         executeBlock(body);
 
-        Value result = context.returnResult;
+        val = context.returnResult;
         context.returnResult = EmptyValue();
 
-        if (result is EmptyValue) return NullValue();
+        if (val is EmptyValue) return NullValue();
 
         context.popStackFrame();
-
-        return result;
       } else {
-        return func.evaluate(arguments);
+        val = func.evaluate(arguments);
       }
+
+      if (val is ErrorValue) {
+        runtimeError(val.message);
+      } else if (val is ArrayValue) {
+        for (Value element in val.value) {
+          if (element is ErrorValue) runtimeError(element.message);
+        }
+      }
+
+      return val;
     }
 
     return NullValue();
@@ -237,86 +272,98 @@ class Executer {
   }
 
   Value handleBinary(BinaryExpr expr) {
+    Value? val = null;
+
     if (expr.op.type == TokenType.ADD) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.add(right);
+      val = left.add(right);
     }
     if (expr.op.type == TokenType.SUB) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.sub(right);
+      val = left.sub(right);
     }
     if (expr.op.type == TokenType.MUL) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.mul(right);
+      val = left.mul(right);
     }
     if (expr.op.type == TokenType.DIV) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.div(right);
+      val = left.div(right);
     }
 
     if (expr.op.type == TokenType.LT) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.lt(right);
+      val = left.lt(right);
     }
 
     if (expr.op.type == TokenType.GT) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.gt(right);
+      val = left.gt(right);
     }
 
     if (expr.op.type == TokenType.LE) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.le(right);
+      val = left.le(right);
     }
 
     if (expr.op.type == TokenType.GE) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.ge(right);
+      val = left.ge(right);
     }
 
     if (expr.op.type == TokenType.EQ) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.eq(right);
+      val = left.eq(right);
     }
 
     if (expr.op.type == TokenType.NE) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.ne(right);
+      val = left.ne(right);
     }
 
     if (expr.op.type == TokenType.AND) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.and(right);
+      val = left.and(right);
     }
 
     if (expr.op.type == TokenType.OR) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);
 
-      return left.or(right);
+      val = left.or(right);
     }
+
+    if (val is ErrorValue) {
+      typeError(val.message);
+    } else if (val is ArrayValue) {
+      for (Value element in val.value) {
+        if (element is ErrorValue) typeError(element.message);
+      }
+    }
+
+    if (val != null) return val;
 
     return NullValue();
   }

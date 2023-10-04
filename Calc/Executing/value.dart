@@ -4,52 +4,61 @@ class Value {
   Value.clone(Value value) : this();
 
   Value add(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value sub(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value mul(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value div(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value gt(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value lt(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value ge(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value le(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value eq(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value ne(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value and(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
 
   Value or(Value other) {
-    return NullValue();
+    return ErrorValue("");
   }
+}
+
+class ErrorValue extends Value {
+  String message = "";
+  String type = "Type Error";
+
+  ErrorValue(this.message);
+
+  ErrorValue.type(this.type, this.message);
 }
 
 class NullValue extends Value {
@@ -77,35 +86,35 @@ class BooleanValue extends Value {
   BooleanValue.clone(BooleanValue other) : this(other.value);
 
   Value add(Value other) {
-    return NullValue();
+    return ErrorValue("cannot add a boolean");
   }
 
   Value sub(Value other) {
-    return NullValue();
+    return ErrorValue("cannot subtract a boolean");
   }
 
   Value mul(Value other) {
-    return NullValue();
+    return ErrorValue("cannot multipy a boolean");
   }
 
   Value div(Value other) {
-    return NullValue();
+    return ErrorValue("cannot divide a boolean");
   }
 
   Value gt(Value other) {
-    return NullValue();
+    return ErrorValue("cannot compare a boolean");
   }
 
   Value lt(Value other) {
-    return NullValue();
+    return ErrorValue("cannot compare a boolean");
   }
 
   Value ge(Value other) {
-    return NullValue();
+    return ErrorValue("cannot compare a boolean");
   }
 
   Value le(Value other) {
-    return NullValue();
+    return ErrorValue("cannot compare a boolean");
   }
 
   Value eq(Value other) {
@@ -129,7 +138,7 @@ class BooleanValue extends Value {
       return BooleanValue(value && other.value);
     }
 
-    return NullValue();
+    return ErrorValue("cannot perform and operation with a non boolean");
   }
 
   Value or(Value other) {
@@ -137,7 +146,7 @@ class BooleanValue extends Value {
       return BooleanValue(value || other.value);
     }
 
-    return NullValue();
+    return ErrorValue("cannot perform or operation with a non boolean");
   }
 
   @override
@@ -165,7 +174,7 @@ class NumberValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("Can only add numbers with other numbers or arrays");
   }
 
   Value sub(Value other) {
@@ -180,7 +189,7 @@ class NumberValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("Can only subtract numbers with other numbers or arrays");
   }
 
   Value mul(Value other) {
@@ -195,7 +204,7 @@ class NumberValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("Can only multipy numbers with other numbers or arrays");
   }
 
   Value div(Value other) {
@@ -210,7 +219,7 @@ class NumberValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("Can only divide numbers with other numbers or arrays");
   }
 
   Value gt(Value other) {
@@ -226,7 +235,7 @@ class NumberValue extends Value {
       return ArrayValue(res);
     }
 
-    return NullValue();
+    return ErrorValue("Can only compare numbers with other numbers or arrays");
   }
 
   Value lt(Value other) {
@@ -242,7 +251,7 @@ class NumberValue extends Value {
       return ArrayValue(res);
     }
 
-    return NullValue();
+    return ErrorValue("Can only compare numbers with other numbers or arrays");
   }
 
   Value ge(Value other) {
@@ -258,7 +267,7 @@ class NumberValue extends Value {
       return ArrayValue(res);
     }
 
-    return NullValue();
+    return ErrorValue("Can only compare numbers with other numbers or arrays");
   }
 
   Value le(Value other) {
@@ -274,7 +283,7 @@ class NumberValue extends Value {
       return ArrayValue(res);
     }
 
-    return NullValue();
+    return ErrorValue("Can only compare numbers with other numbers or arrays");
   }
 
   Value eq(Value other) {
@@ -294,11 +303,11 @@ class NumberValue extends Value {
   }
 
   Value and(Value other) {
-    return NullValue();
+    return ErrorValue("cannot perform and operation with a non boolean");
   }
 
   Value or(Value other) {
-    return NullValue();
+    return ErrorValue("cannot perform or operation with a non boolean");
   }
 
   @override
@@ -323,7 +332,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise addition with numbers");
   }
 
   Value sub(Value other) {
@@ -335,7 +344,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise subtraction with numbers");
   }
 
   Value mul(Value other) {
@@ -347,7 +356,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise multiplication with numbers");
   }
 
   Value div(Value other) {
@@ -359,7 +368,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise division with numbers");
   }
 
   Value gt(Value other) {
@@ -371,7 +380,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise comparison with numbers");
   }
 
   Value lt(Value other) {
@@ -383,7 +392,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise comparison with numbers");
   }
 
   Value ge(Value other) {
@@ -395,7 +404,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise comparison with numbers");
   }
 
   Value le(Value other) {
@@ -407,7 +416,7 @@ class ArrayValue extends Value {
 
       return ArrayValue(res);
     }
-    return NullValue();
+    return ErrorValue("can only do element wise comparison with numbers");
   }
 
   Value eq(Value other) {
@@ -441,11 +450,11 @@ class ArrayValue extends Value {
   }
 
   Value and(Value other) {
-    return NullValue();
+    return ErrorValue("cannot perform and operation with a non boolean");
   }
 
   Value or(Value other) {
-    return NullValue();
+    return ErrorValue("cannot perform or operation with a non boolean");
   }
 
   @override

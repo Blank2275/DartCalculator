@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import '../error.dart';
 import 'Parameter.dart';
 import 'Type.dart';
 import 'block.dart';
@@ -16,6 +15,13 @@ class ScriptParser {
 
   ScriptParser(this.tokens);
 
+  bool isParsing = true;
+
+  void parseError(String message) {
+    print("Syntax Error: " + message);
+    isParsing = false;
+  }
+
   bool isAtEnd() {
     return current >= tokens.length;
   }
@@ -25,23 +31,36 @@ class ScriptParser {
   }
 
   Token advance() {
+    if (isAtEnd()) {
+      parseError("expected token, found end of file");
+      current += 1;
+      return Token(TokenType.NULL, null);
+    }
     current += 1;
 
     return previous();
   }
 
   Token peek() {
+    if (isAtEnd()) {
+      // parseError("expected token, found end of file");
+      return Token(TokenType.NULL, null);
+    }
+
     return tokens[current];
   }
 
   Token? peekNext() {
-    if (current >= tokens.length - 1) return null;
+    if (current >= tokens.length - 1) {
+      return null;
+    }
     return tokens[current + 1];
   }
 
   List<Decl> parseAll() {
+    isParsing = true;
     List<Decl> declarations = [];
-    while (!isAtEnd()) {
+    while (!isAtEnd() && isParsing) {
       declarations.add(parseDeclaration());
     }
 
@@ -49,7 +68,7 @@ class ScriptParser {
   }
 
   bool match(List<TokenType> targets) {
-    if (isAtEnd()) return false;
+    if (isAtEnd() || !isParsing) return false;
 
     for (TokenType target in targets) {
       if (peek().type == TokenType.IDENTIFIER_LITERAL &&
@@ -247,7 +266,8 @@ class ScriptParser {
     List<Stmt> block = [];
 
     while (!(peek().type == TokenType.IDENTIFIER_LITERAL &&
-        peek().value == "end")) {
+            peek().value == "end") &&
+        isParsing) {
       block.add(parseStatement());
     }
 
@@ -269,18 +289,21 @@ class ScriptParser {
   }
 
   Expr value() {
+    if (!isParsing) return NullExpr();
     Token t = advance();
 
     if (t.type == TokenType.NUMBER_LITERAL) {
       return NumberExpr(t);
-    } else if (t.type == TokenType.DOLLAR) {
-      advance();
-      expect(TokenType.IDENTIFIER_LITERAL, "Expected variable to reference");
+    }
+    // else if (t.type == TokenType.DOLLAR) {
+    //   advance();
+    //   expect(TokenType.IDENTIFIER_LITERAL, "Expected variable to reference");
 
-      String name = previous().value!;
+    //   String name = previous().value!;
 
-      return ReferenceExpr(previous());
-    } else if (t.type == TokenType.IDENTIFIER_LITERAL) {
+    //   return ReferenceExpr(previous());
+    // }
+    else if (t.type == TokenType.IDENTIFIER_LITERAL) {
       if (t.value == "true" || t.value == "false") {
         return BooleanExpr(t);
       } else if (t.value == "null") {

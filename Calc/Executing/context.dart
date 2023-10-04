@@ -53,6 +53,12 @@ class Context {
     return NullValue();
   }
 
+  Value getReferencedVariable(String name) {
+    Value value = lookupVariable(name);
+
+    return value;
+  }
+
   Value lookupVariable(String name) {
     if (stack.length == 0) {
       Value globalValue = global.getVariable(name);

@@ -24,7 +24,8 @@ enum TokenType {
   PERIOD,
   DOLLAR,
   TERNARY,
-  COLON
+  COLON,
+  NULL,
 }
 
 class Token {
