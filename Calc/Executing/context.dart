@@ -137,7 +137,6 @@ class StandardContext extends Context {
     setFunction("len", LenFunc());
     setFunction("get", GetFunc());
     setFunction("set", SetFunc());
-    setFunction("add", AddFunc());
     setFunction("range", RangeFunc());
     setFunction("typeof", TypeofFunc());
   }
