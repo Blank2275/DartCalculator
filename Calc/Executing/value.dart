@@ -70,12 +70,198 @@ class NullValue extends Value {
   String toString() {
     return "null";
   }
+
+  Value add(Value other) {
+    return ErrorValue("cannot add null");
+  }
+
+  Value sub(Value other) {
+    return ErrorValue("cannot subtact null");
+  }
+
+  Value mul(Value other) {
+    return ErrorValue("cannot multiply null");
+  }
+
+  Value div(Value other) {
+    return ErrorValue("cannot divide null");
+  }
+
+  Value gt(Value other) {
+    return ErrorValue("cannot compare null");
+  }
+
+  Value lt(Value other) {
+    return ErrorValue("cannot compare null");
+  }
+
+  Value ge(Value other) {
+    return ErrorValue("cannot compare null");
+  }
+
+  Value le(Value other) {
+    return ErrorValue("cannot compare null");
+  }
+
+  Value eq(Value other) {
+    if (other is NullValue) {
+      return BooleanValue(true);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is NullValue) {
+      return BooleanValue(false);
+    }
+
+    return BooleanValue(true);
+  }
+
+  Value and(Value other) {
+    return ErrorValue("cannot perform and operation with a non boolean");
+  }
+
+  Value or(Value other) {
+    return ErrorValue("cannot perform or operation with a non boolean");
+  }
 }
 
 class EmptyValue extends Value {
   EmptyValue();
 
   EmptyValue.clone(EmptyValue other) : this();
+
+  Value add(Value other) {
+    return ErrorValue("cannot add empty");
+  }
+
+  Value sub(Value other) {
+    return ErrorValue("cannot subtact empty");
+  }
+
+  Value mul(Value other) {
+    return ErrorValue("cannot multiply empty");
+  }
+
+  Value div(Value other) {
+    return ErrorValue("cannot divide empty");
+  }
+
+  Value gt(Value other) {
+    return ErrorValue("cannot compare empty");
+  }
+
+  Value lt(Value other) {
+    return ErrorValue("cannot compare empty");
+  }
+
+  Value ge(Value other) {
+    return ErrorValue("cannot compare empty");
+  }
+
+  Value le(Value other) {
+    return ErrorValue("cannot compare empty");
+  }
+
+  Value eq(Value other) {
+    if (other is NullValue) {
+      return BooleanValue(true);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is NullValue) {
+      return BooleanValue(false);
+    }
+
+    return BooleanValue(true);
+  }
+
+  Value and(Value other) {
+    return ErrorValue("cannot perform and operation with a non boolean");
+  }
+
+  Value or(Value other) {
+    return ErrorValue("cannot perform or operation with a non boolean");
+  }
+
+  @override
+  String toString() {
+    return "empty";
+  }
+}
+
+class StringValue extends Value {
+  String value;
+
+  StringValue(this.value);
+
+  StringValue.clone(StringValue other) : this(other.value);
+
+  Value add(Value other) {
+    return ErrorValue("cannot add strings");
+  }
+
+  Value sub(Value other) {
+    return ErrorValue("cannot subtract strings");
+  }
+
+  Value mul(Value other) {
+    return ErrorValue("cannot multiply strings");
+  }
+
+  Value div(Value other) {
+    return ErrorValue("cannot divide strings");
+  }
+
+  Value gt(Value other) {
+    return ErrorValue("cannot compare strings");
+  }
+
+  Value lt(Value other) {
+    return ErrorValue("cannot compare strings");
+  }
+
+  Value ge(Value other) {
+    return ErrorValue("cannot compare strings");
+  }
+
+  Value le(Value other) {
+    return ErrorValue("cannot compare strings");
+  }
+
+  Value eq(Value other) {
+    if (other is StringValue) {
+      return BooleanValue(value == other.value);
+    }
+
+    return BooleanValue(false);
+  }
+
+  Value ne(Value other) {
+    if (other is StringValue) {
+      return BooleanValue(value != other.value);
+    }
+
+    return BooleanValue(true);
+  }
+
+  Value and(Value other) {
+    return ErrorValue("cannot perform and operation with a non boolean");
+  }
+
+  Value or(Value other) {
+    return ErrorValue("cannot perform or operation with a non boolean");
+  }
+
+  @override
+  String toString() {
+    return value;
+  }
 }
 
 class BooleanValue extends Value {

@@ -87,6 +87,31 @@ class LenFunc extends Func {
   }
 }
 
+class TypeofFunc extends Func {
+  TypeofFunc() : super([Parameter(ValueType("any"), "val")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    Value val = arguments[0];
+
+    if (val is NullValue) {
+      return StringValue("null");
+    } else if (val is EmptyValue) {
+      return StringValue('empty');
+    } else if (val is NumberValue) {
+      return StringValue("number");
+    } else if (val is BooleanValue) {
+      return StringValue("boolean");
+    } else if (val is ArrayValue) {
+      return StringValue("array");
+    } else if (val is StringValue) {
+      return StringValue("string");
+    }
+
+    return StringValue("Should not print, check typeof func");
+  }
+}
+
 class GetFunc extends Func {
   GetFunc()
       : super([

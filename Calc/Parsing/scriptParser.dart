@@ -294,6 +294,8 @@ class ScriptParser {
 
     if (t.type == TokenType.NUMBER_LITERAL) {
       return NumberExpr(t);
+    } else if (t.type == TokenType.STRING_LITERAL) {
+      return StringExpr(t);
     }
     // else if (t.type == TokenType.DOLLAR) {
     //   advance();
@@ -311,12 +313,14 @@ class ScriptParser {
       } else {
         if (match([TokenType.LPAREN])) {
           List<Expr> arguments = [];
-          arguments.add(ternary());
-
-          while (match([TokenType.COMMA])) {
+          if (!match([TokenType.RPAREN])) {
             arguments.add(ternary());
+
+            while (match([TokenType.COMMA])) {
+              arguments.add(ternary());
+            }
+            expect(TokenType.RPAREN, "expected closing parenthace");
           }
-          expect(TokenType.RPAREN, "expected closing parenthace");
           return FuncCallExpr(t, arguments);
         }
         return IdentifierExpr(t);

@@ -159,6 +159,14 @@ List<Token> lex(String text) {
       case ".":
         tokens.add(Token(TokenType.PERIOD, null));
         break;
+      case "\"":
+        String val = "";
+
+        while (!isAtEnd() && consume() != "\"") {
+          val += previous();
+        }
+
+        tokens.add(Token(TokenType.STRING_LITERAL, val));
       default:
         if (isNumeric(c)) {
           number();

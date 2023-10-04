@@ -1,6 +1,7 @@
 enum TokenType {
   NUMBER_LITERAL,
   IDENTIFIER_LITERAL,
+  STRING_LITERAL,
   ADD,
   SUB,
   MUL,

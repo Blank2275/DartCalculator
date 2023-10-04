@@ -189,6 +189,22 @@ class ReferenceExpr extends Expr {
   }
 }
 
+class StringExpr extends Expr {
+  Token value;
+
+  StringExpr(this.value);
+
+  String pretty(int level) {
+    String prefix = "    " * level;
+    return "${prefix}String (${this.value.value})";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class IdentifierExpr extends Expr {
   Token value;
 

@@ -179,7 +179,10 @@ class Executer {
       return NumberValue(expr.getDoubleValue());
     } else if (expr is BooleanExpr) {
       return BooleanValue(expr.value.value == "true" ? true : false);
-    } else if (expr is IdentifierExpr) {
+    } else if (expr is StringExpr) {
+      return StringValue(expr.value.value!);
+    }
+    if (expr is IdentifierExpr) {
       String name = expr.value.value!;
 
       return context.getVariable(name);
@@ -262,10 +265,19 @@ class Executer {
   }
 
   Value handleUnary(UnaryExpr expr) {
+    Value val = NullValue();
     if (expr.op.type == TokenType.SUB) {
       Value child = handleExpression(expr.child);
 
-      return child.mul(NumberValue(-1));
+      val = child.mul(NumberValue(-1));
+    }
+
+    if (val is ErrorValue) {
+      typeError(val.message);
+    } else if (val is ArrayValue) {
+      for (Value element in val.value) {
+        if (element is ErrorValue) typeError(element.message);
+      }
     }
 
     return NullValue();
@@ -279,6 +291,7 @@ class Executer {
       Value right = handleExpression(expr.right);
 
       val = left.add(right);
+      print((val as ErrorValue).message);
     }
     if (expr.op.type == TokenType.SUB) {
       Value left = handleExpression(expr.left);

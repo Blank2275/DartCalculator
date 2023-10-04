@@ -49,6 +49,7 @@ class Context {
     if (value is NumberValue) return NumberValue.clone(value);
     if (value is BooleanValue) return BooleanValue.clone(value);
     if (value is ArrayValue) return ArrayValue.clone(value);
+    if (value is StringValue) return StringValue.clone(value);
 
     return NullValue();
   }
@@ -138,5 +139,6 @@ class StandardContext extends Context {
     setFunction("set", SetFunc());
     setFunction("add", AddFunc());
     setFunction("range", RangeFunc());
+    setFunction("typeof", TypeofFunc());
   }
 }
