@@ -310,6 +310,28 @@ class ScriptParser {
         return BooleanExpr(t);
       } else if (t.value == "null") {
         return NullExpr();
+      } else if (match([TokenType.PERIOD])) {
+        Token name = advance();
+
+        if (name.type != TokenType.IDENTIFIER_LITERAL) {
+          parseError("expected function name");
+        }
+        expect(TokenType.LPAREN, "expected opening parenthace");
+        List<Expr> arguments = [];
+        if (!match([TokenType.RPAREN])) {
+          arguments.add(ternary());
+
+          while (match([TokenType.COMMA])) {
+            arguments.add(ternary());
+          }
+          expect(TokenType.RPAREN, "expected closing parenthace");
+        } else {
+          expect(TokenType.LPAREN, "expected closing parenthace");
+        }
+        Expr impliedArgument = IdentifierExpr(t);
+        arguments.insert(0, impliedArgument);
+
+        return FuncCallExpr(name, arguments);
       } else {
         if (match([TokenType.LPAREN])) {
           List<Expr> arguments = [];

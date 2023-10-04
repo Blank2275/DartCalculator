@@ -152,7 +152,7 @@ class SetFunc extends Func {
     }
 
     elements[index] = arguments[2];
-    return NullValue();
+    return ArrayValue(elements);
   }
 }
 
