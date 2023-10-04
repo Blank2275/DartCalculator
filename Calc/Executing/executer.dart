@@ -311,6 +311,19 @@ class Executer {
       val = left.div(right);
     }
 
+    if (expr.op.type == TokenType.POW) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      val = left.valuePow(right);
+    }
+    if (expr.op.type == TokenType.MOD) {
+      Value left = handleExpression(expr.left);
+      Value right = handleExpression(expr.right);
+
+      val = left.mod(right);
+    }
+
     if (expr.op.type == TokenType.LT) {
       Value left = handleExpression(expr.left);
       Value right = handleExpression(expr.right);

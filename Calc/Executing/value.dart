@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class Value {
   Value();
 
@@ -16,6 +18,14 @@ class Value {
   }
 
   Value div(Value other) {
+    return ErrorValue("");
+  }
+
+  Value valuePow(Value other) {
+    return ErrorValue("");
+  }
+
+  Value mod(Value other) {
     return ErrorValue("");
   }
 
@@ -83,6 +93,14 @@ class NullValue extends Value {
     return ErrorValue("cannot multiply null");
   }
 
+  Value valuePow(Value other) {
+    return ErrorValue("cannot exponentiate null");
+  }
+
+  Value mod(Value other) {
+    return ErrorValue("cannot modulo null");
+  }
+
   Value div(Value other) {
     return ErrorValue("cannot divide null");
   }
@@ -147,6 +165,14 @@ class EmptyValue extends Value {
 
   Value div(Value other) {
     return ErrorValue("cannot divide empty");
+  }
+
+  Value valuePow(Value other) {
+    return ErrorValue("cannot exponentiate empty");
+  }
+
+  Value mod(Value other) {
+    return ErrorValue("cannot modulo empty");
   }
 
   Value gt(Value other) {
@@ -218,6 +244,14 @@ class StringValue extends Value {
     return ErrorValue("cannot divide strings");
   }
 
+  Value valuePow(Value other) {
+    return ErrorValue("cannot exponentiate strings");
+  }
+
+  Value mod(Value other) {
+    return ErrorValue("cannot modulo strings");
+  }
+
   Value gt(Value other) {
     return ErrorValue("cannot compare strings");
   }
@@ -285,6 +319,14 @@ class BooleanValue extends Value {
 
   Value div(Value other) {
     return ErrorValue("cannot divide a boolean");
+  }
+
+  Value valuePow(Value other) {
+    return ErrorValue("cannot exponentiate a boolean");
+  }
+
+  Value mod(Value other) {
+    return ErrorValue("cannot modulo a boolean");
   }
 
   Value gt(Value other) {
@@ -406,6 +448,40 @@ class NumberValue extends Value {
       return ArrayValue(res);
     }
     return ErrorValue("Can only divide numbers with other numbers or arrays");
+  }
+
+  Value valuePow(Value other) {
+    if (other is NumberValue) {
+      // return NumberValue(value / other.value);
+      return NumberValue(pow(value, other.value) as double);
+    } else if (other is ArrayValue) {
+      List<Value> res = [];
+
+      for (Value element in other.value) {
+        res.add(this.valuePow(element));
+      }
+
+      return ArrayValue(res);
+    }
+    return ErrorValue(
+        "Can only exponentiate numbers with other numbers or arrays");
+  }
+
+  Value mod(Value other) {
+    if (other is NumberValue) {
+      // return NumberValue(value / other.value);
+      return NumberValue(value % other.value);
+    } else if (other is ArrayValue) {
+      List<Value> res = [];
+
+      for (Value element in other.value) {
+        res.add(this.mod(element));
+      }
+
+      return ArrayValue(res);
+    }
+    return ErrorValue(
+        "Can only exponentiate numbers with other numbers or arrays");
   }
 
   Value gt(Value other) {
@@ -555,6 +631,30 @@ class ArrayValue extends Value {
       return ArrayValue(res);
     }
     return ErrorValue("can only do element wise division with numbers");
+  }
+
+  Value valuePow(Value other) {
+    List<Value> res = [];
+    if (other is NumberValue) {
+      for (Value element in value) {
+        res.add(element.valuePow(other));
+      }
+
+      return ArrayValue(res);
+    }
+    return ErrorValue("can only do element wise exponentiation with numbers");
+  }
+
+  Value mod(Value other) {
+    List<Value> res = [];
+    if (other is NumberValue) {
+      for (Value element in value) {
+        res.add(element.mod(other));
+      }
+
+      return ArrayValue(res);
+    }
+    return ErrorValue("can only do element wise modulation with numbers");
   }
 
   Value gt(Value other) {

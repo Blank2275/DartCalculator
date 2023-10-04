@@ -93,6 +93,12 @@ List<Token> lex(String text) {
       case "/":
         tokens.add(Token(TokenType.DIV, null));
         break;
+      case "^":
+        tokens.add(Token(TokenType.POW, null));
+        break;
+      case "%":
+        tokens.add(Token(TokenType.MOD, null));
+        break;
       case "(":
         tokens.add(Token(TokenType.LPAREN, null));
         break;

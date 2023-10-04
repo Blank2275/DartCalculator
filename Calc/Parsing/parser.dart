@@ -216,12 +216,25 @@ class Parser {
     }
   }
 
-  Expr factor() {
+  Expr _power() {
     Expr expr = unary();
 
-    while (match([TokenType.MUL, TokenType.DIV])) {
+    while (match([TokenType.POW])) {
       Token op = previous();
       Expr right = unary();
+
+      expr = BinaryExpr(expr, right, op);
+    }
+
+    return expr;
+  }
+
+  Expr factor() {
+    Expr expr = _power();
+
+    while (match([TokenType.MUL, TokenType.DIV, TokenType.MOD])) {
+      Token op = previous();
+      Expr right = _power();
 
       expr = BinaryExpr(expr, right, op);
     }

@@ -7,6 +7,7 @@ enum TokenType {
   MUL,
   DIV,
   MOD,
+  POW,
   LT,
   GT,
   LE,
