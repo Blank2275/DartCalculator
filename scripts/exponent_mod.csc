@@ -1,4 +1,11 @@
-a = range(0, 20, 1)
+fun exp(number val, boolean echo) do
+    res = 2.71 ^ val
 
-print 2 ^ a
-print a ^ 2
+    if (echo) do
+        print res
+    end
+
+    return res
+end
+
+exec "exp" [2, 1]

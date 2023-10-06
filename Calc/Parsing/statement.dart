@@ -106,6 +106,22 @@ class ReturnStmt extends Stmt {
   }
 }
 
+class ExecStmt extends Stmt {
+  Expr name;
+  Expr arguments;
+
+  ExecStmt(this.name, this.arguments);
+
+  String pretty(int level) {
+    return "exec $name ($arguments)";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class WhileStmt extends Stmt {
   Expr condition;
   Block body;

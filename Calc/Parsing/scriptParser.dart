@@ -154,6 +154,22 @@ class ScriptParser {
       } else if (peek().value == "for") {
         advance();
         return parseForLoop();
+      } else if (peek().value == "exec") {
+        advance();
+
+        Expr name = parseExpression(); // should be string
+        Expr arguments = parseExpression(); // should be array
+
+        if (!(name is StringExpr)) {
+          parseError("Expected string for exec statement");
+          return NullStmt();
+        }
+        if (!(arguments is ArrayExpr)) {
+          parseError("Expected array arguments for exec statement");
+          return NullStmt();
+        }
+
+        return ExecStmt(name, arguments);
       } else if (peek().value == "while") {
         advance();
         return parseWhileLoop();

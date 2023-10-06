@@ -93,6 +93,10 @@ class Executer {
       } else {
         handleStatement(onFalse);
       }
+    } else if (stmt is ExecStmt) {
+      String name = (stmt.name as StringExpr).value.value!;
+      List<Expr> arguments = (stmt.arguments as ArrayExpr).value;
+      handleFunction(name, arguments);
     } else if (stmt is ForStmt) {
       Value array = handleExpression(stmt.value);
       String iteratorName = stmt.iterator.value.value!;
@@ -205,63 +209,67 @@ class Executer {
       return ArrayValue(values);
     } else if (expr is FuncCallExpr) {
       String name = expr.name.value!;
-      Func func = context.getFunction(name);
-
-      List<Expr> argumentExprs = expr.arguments;
-
-      List<Value> arguments = [];
-
-      for (Expr element in argumentExprs) {
-        arguments.add(handleExpression(element));
-      }
-
-      Value? val = null;
-
-      if (func is ExprFunc) {
-        context.addStackFrame();
-        List<Parameter> parameters = func.parameters;
-
-        for (int i = 0; i < parameters.length; i++) {
-          context.setVariable(parameters[i].name, arguments[i]);
-        }
-
-        val = handleExpression(func.expr);
-
-        context.popStackFrame();
-      } else if (func is ScriptFunc) {
-        context.addStackFrame();
-        List<Parameter> parameters = func.parameters;
-
-        for (int i = 0; i < parameters.length; i++) {
-          context.setVariable(parameters[i].name, arguments[i]);
-        }
-
-        Block body = func.body;
-
-        executeBlock(body);
-
-        val = context.returnResult;
-        context.returnResult = EmptyValue();
-
-        if (val is EmptyValue) return NullValue();
-
-        context.popStackFrame();
-      } else {
-        val = func.evaluate(arguments);
-      }
-
-      if (val is ErrorValue) {
-        runtimeError(val.message);
-      } else if (val is ArrayValue) {
-        for (Value element in val.value) {
-          if (element is ErrorValue) runtimeError(element.message);
-        }
-      }
-
-      return val;
+      return handleFunction(name, expr.arguments);
     }
 
     return NullValue();
+  }
+
+  Value handleFunction(String name, List<Expr> argumentExprs) {
+    Func func = context.getFunction(name);
+
+    // List<Expr> argumentExprs =arguments;
+
+    List<Value> arguments = [];
+
+    for (Expr element in argumentExprs) {
+      arguments.add(handleExpression(element));
+    }
+
+    Value? val = null;
+
+    if (func is ExprFunc) {
+      context.addStackFrame();
+      List<Parameter> parameters = func.parameters;
+
+      for (int i = 0; i < parameters.length; i++) {
+        context.setVariable(parameters[i].name, arguments[i]);
+      }
+
+      val = handleExpression(func.expr);
+
+      context.popStackFrame();
+    } else if (func is ScriptFunc) {
+      context.addStackFrame();
+      List<Parameter> parameters = func.parameters;
+
+      for (int i = 0; i < parameters.length; i++) {
+        context.setVariable(parameters[i].name, arguments[i]);
+      }
+
+      Block body = func.body;
+
+      executeBlock(body);
+
+      val = context.returnResult;
+      context.returnResult = EmptyValue();
+
+      if (val is EmptyValue) return NullValue();
+
+      context.popStackFrame();
+    } else {
+      val = func.evaluate(arguments);
+    }
+
+    if (val is ErrorValue) {
+      runtimeError(val.message);
+    } else if (val is ArrayValue) {
+      for (Value element in val.value) {
+        if (element is ErrorValue) runtimeError(element.message);
+      }
+    }
+
+    return val;
   }
 
   Value handleUnary(UnaryExpr expr) {
