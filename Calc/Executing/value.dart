@@ -82,6 +82,10 @@ class NullValue extends Value {
   }
 
   Value add(Value other) {
+    if (other is StringValue) {
+      return StringValue(toString() + other.value);
+    }
+
     return ErrorValue("cannot add null");
   }
 
@@ -221,6 +225,79 @@ class EmptyValue extends Value {
   }
 }
 
+class FunctionValue extends Value {
+  String value;
+
+  FunctionValue(this.value);
+
+  FunctionValue.clone(FunctionValue other) : this(other.value);
+
+  @override
+  String toString() {
+    return "null";
+  }
+
+  Value add(Value other) {
+    if (other is StringValue) {
+      return StringValue(toString() + other.value);
+    }
+
+    return ErrorValue("cannot add functions");
+  }
+
+  Value sub(Value other) {
+    return ErrorValue("cannot subtact functions");
+  }
+
+  Value mul(Value other) {
+    return ErrorValue("cannot multiply functions");
+  }
+
+  Value valuePow(Value other) {
+    return ErrorValue("cannot exponentiate functions");
+  }
+
+  Value mod(Value other) {
+    return ErrorValue("cannot modulo functions");
+  }
+
+  Value div(Value other) {
+    return ErrorValue("cannot divide functions");
+  }
+
+  Value gt(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value lt(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value ge(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value le(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value eq(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value ne(Value other) {
+    return ErrorValue("cannot compare functions");
+  }
+
+  Value and(Value other) {
+    return ErrorValue("cannot perform and operation with a non boolean");
+  }
+
+  Value or(Value other) {
+    return ErrorValue("cannot perform or operation with a non boolean");
+  }
+}
+
 class StringValue extends Value {
   String value;
 
@@ -229,7 +306,7 @@ class StringValue extends Value {
   StringValue.clone(StringValue other) : this(other.value);
 
   Value add(Value other) {
-    return ErrorValue("cannot add strings");
+    return StringValue(value + other.toString());
   }
 
   Value sub(Value other) {
@@ -306,6 +383,10 @@ class BooleanValue extends Value {
   BooleanValue.clone(BooleanValue other) : this(other.value);
 
   Value add(Value other) {
+    if (other is StringValue) {
+      return StringValue(toString() + other.value);
+    }
+
     return ErrorValue("cannot add a boolean");
   }
 
@@ -401,6 +482,8 @@ class NumberValue extends Value {
       }
 
       return ArrayValue(res);
+    } else if (other is StringValue) {
+      return StringValue(toString() + other.value);
     }
     return ErrorValue("Can only add numbers with other numbers or arrays");
   }
@@ -593,6 +676,8 @@ class ArrayValue extends Value {
       }
 
       return ArrayValue(res);
+    } else if (other is StringValue) {
+      return StringValue(toString() + other.value);
     }
     return ErrorValue("can only do element wise addition with numbers");
   }

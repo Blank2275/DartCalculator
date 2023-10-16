@@ -15,14 +15,16 @@ fun zeros(array size) do
     arr = []
     for (i in range(0, get(size, 0), 1)) do 
         if (len(size) == 1) do 
-            arr = add(arr, 0)
+            arr = arr.add(0)
         end
         else
-            arr = add(arr, zeros(remove(size, 0))) 
+            arr = add(arr, zeros(size.remove(0))) 
         end
     end
 
     return arr
 end
 
-print zeros([2, 3]) + 1
+shape = [2, 3]
+mat = zeros([2, 3])
+print mat

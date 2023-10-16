@@ -50,6 +50,7 @@ class Context {
     if (value is BooleanValue) return BooleanValue.clone(value);
     if (value is ArrayValue) return ArrayValue.clone(value);
     if (value is StringValue) return StringValue.clone(value);
+    if (value is FunctionValue) return FunctionValue.clone(value);
 
     return NullValue();
   }
@@ -64,12 +65,28 @@ class Context {
     if (stack.length == 0) {
       Value globalValue = global.getVariable(name);
 
+      if (globalValue is NullValue) {
+        Func variableFunc = getFunction(name);
+
+        if (!(variableFunc is NullFunc)) {
+          return FunctionValue(name);
+        }
+      }
+
       return globalValue;
     } else {
       Value? stackValue = stack[stack.length - 1].getVariable(name);
 
       if (stackValue is NullValue) {
         Value globalValue = global.getVariable(name);
+
+        if (globalValue is NullValue) {
+          Func variableFunc = getFunction(name);
+
+          if (!(variableFunc is NullFunc)) {
+            return FunctionValue(name);
+          }
+        }
 
         return globalValue;
       } else {
@@ -86,6 +103,11 @@ class Context {
     Func? func = functions[name];
 
     if (func != null) return func;
+
+    Value funcValue = lookupVariable(name);
+
+    if (funcValue is FunctionValue) return functions[funcValue.value]!;
+
     return NullFunc();
   }
 }

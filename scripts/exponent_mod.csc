@@ -1,11 +1,15 @@
-fun exp(number val, boolean echo) do
-    res = 2.71 ^ val
+fun apply(function func, array arr) do
+    res = []
 
-    if (echo) do
-        print res
+    for (element in arr) do
+        res = res.add(func(element))
     end
 
     return res
 end
 
-exec "exp" [2, 1]
+fun square(number x) do
+    return x ^ 2
+end
+
+print apply(square, [0, 1, 2, 3, 4, 5])

@@ -34,6 +34,7 @@ class Func {
       if (arguments[i] is NumberValue && typeName != "number") return false;
       if (arguments[i] is BooleanValue && typeName != "boolean") return false;
       if (arguments[i] is ArrayValue && typeName != "array") return false;
+      if (arguments[i] is FunctionValue && typeName != "function") return false;
       // if (arguments[i] is BooleanValue && typeName != "boolean") return false;
     }
 
