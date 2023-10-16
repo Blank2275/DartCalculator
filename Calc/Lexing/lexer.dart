@@ -15,7 +15,7 @@ List<Token> lex(String text) {
 
   bool isAlpha(String c) {
     if (c.isEmpty) return false;
-    return "abcdefghijklmnopqrstuvwxyz".contains(c);
+    return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(c);
   }
 
   bool isAlphaNumeric(String c) {

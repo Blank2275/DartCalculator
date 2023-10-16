@@ -61,6 +61,25 @@ class Context {
     return value;
   }
 
+  //looks up variables but does not check for functions with that name, used for looking up function variables
+  Value simpleLookupVariable(String name) {
+    if (stack.length == 0) {
+      Value globalValue = global.getVariable(name);
+
+      return globalValue;
+    } else {
+      Value? stackValue = stack[stack.length - 1].getVariable(name);
+
+      if (stackValue is NullValue) {
+        Value globalValue = global.getVariable(name);
+
+        return globalValue;
+      } else {
+        return stackValue;
+      }
+    }
+  }
+
   Value lookupVariable(String name) {
     if (stack.length == 0) {
       Value globalValue = global.getVariable(name);
@@ -104,7 +123,7 @@ class Context {
 
     if (func != null) return func;
 
-    Value funcValue = lookupVariable(name);
+    Value funcValue = simpleLookupVariable(name);
 
     if (funcValue is FunctionValue) return functions[funcValue.value]!;
 

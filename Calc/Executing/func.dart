@@ -35,7 +35,7 @@ class Func {
       if (arguments[i] is BooleanValue && typeName != "boolean") return false;
       if (arguments[i] is ArrayValue && typeName != "array") return false;
       if (arguments[i] is FunctionValue && typeName != "function") return false;
-      // if (arguments[i] is BooleanValue && typeName != "boolean") return false;
+      if (arguments[i] is StringValue && typeName != "string") return false;
     }
 
     return true;
@@ -107,6 +107,8 @@ class TypeofFunc extends Func {
       return StringValue("array");
     } else if (val is StringValue) {
       return StringValue("string");
+    } else if (val is FunctionValue) {
+      return StringValue("function");
     }
 
     return StringValue("Should not print, check typeof func");
