@@ -1,0 +1,1 @@
+print quickRange(10)

@@ -154,6 +154,16 @@ class ScriptParser {
       } else if (peek().value == "for") {
         advance();
         return parseForLoop();
+      } else if (peek().value == "export") {
+        advance();
+
+        Expr name = parseExpression();
+
+        if (!(name is IdentifierExpr)) {
+          parseError("expected name to export");
+        }
+
+        return ExportStmt(name as IdentifierExpr);
       } else if (peek().value == "exec") {
         advance();
 

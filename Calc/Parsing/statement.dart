@@ -122,6 +122,21 @@ class ExecStmt extends Stmt {
   }
 }
 
+class ExportStmt extends Stmt {
+  IdentifierExpr name;
+
+  ExportStmt(this.name);
+
+  String pretty(int level) {
+    return "export $name";
+  }
+
+  @override
+  String toString() {
+    return pretty(0);
+  }
+}
+
 class WhileStmt extends Stmt {
   Expr condition;
   Block body;

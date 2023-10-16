@@ -1,8 +1,13 @@
+import 'dart:math';
+
+import '../Lexing/lexer.dart';
 import '../Lexing/token.dart';
 import '../Parsing/Parameter.dart';
 import '../Parsing/block.dart';
 import '../Parsing/declaration.dart';
 import '../Parsing/expression.dart';
+import '../Parsing/parser.dart';
+import '../Parsing/scriptParser.dart';
 import '../Parsing/statement.dart';
 import 'context.dart';
 import 'func.dart';
@@ -10,7 +15,17 @@ import 'value.dart';
 
 class Executer {
   StandardContext context = StandardContext();
+  Context exportContext = Context();
   bool isRunning = true;
+
+  void loadContext(String program) {
+    Executer executer = Executer();
+    ScriptParser parser = ScriptParser(lex(program));
+
+    executer.runProgram(parser.parseAll());
+
+    context.functions.addAll(executer.exportContext.functions);
+  }
 
   void runtimeError(String message) {
     print("Runtime Error: $message");
@@ -113,6 +128,10 @@ class Executer {
 
         context.popBlockLevel();
       }
+    } else if (stmt is ExportStmt) {
+      String name = stmt.name.value.value!;
+
+      exportContext.setFunction(name, context.getFunction(name));
     } else if (stmt is WhileStmt) {
       Expr condition = stmt.condition;
 
