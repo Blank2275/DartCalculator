@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'func.dart';
 import 'value.dart';
 
@@ -174,11 +176,25 @@ class StandardContext extends Context {
     setFunction("sin", SinFunc());
     setFunction("cos", CosFunc());
     setFunction("tan", TanFunc());
+    setFunction("sec", SecFunc());
+    setFunction("csc", CscFunc());
+    setFunction("cot", CotFunc());
+    setFunction("asin", ASinFunc());
+    setFunction("acos", ACosFunc());
+    setFunction("atan", ATanFunc());
+    setFunction("asec", ASecFunc());
+    setFunction("acsc", ACscFunc());
+    setFunction("acot", ACotFunc());
+    setFunction("sqrt", SqrtFunc());
+    setFunction("nroot", NRootFunc());
     setFunction("add", AddFunc());
     setFunction("len", LenFunc());
     setFunction("get", GetFunc());
     setFunction("set", SetFunc());
     setFunction("range", RangeFunc());
     setFunction("typeof", TypeofFunc());
+
+    setVariable("pi", NumberValue(pi));
+    setVariable("e", NumberValue(e));
   }
 }

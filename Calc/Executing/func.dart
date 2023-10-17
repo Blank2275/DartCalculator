@@ -189,6 +189,121 @@ class TanFunc extends Func {
   }
 }
 
+class ASinFunc extends Func {
+  ASinFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(asin(x));
+  }
+}
+
+class ACosFunc extends Func {
+  ACosFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(acos(x));
+  }
+}
+
+class ATanFunc extends Func {
+  ATanFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(atan(x));
+  }
+}
+
+class SecFunc extends Func {
+  SecFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(1 / cos(x));
+  }
+}
+
+class CscFunc extends Func {
+  CscFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(1 / sin(x));
+  }
+}
+
+class CotFunc extends Func {
+  CotFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(1 / tan(x));
+  }
+}
+
+class ASecFunc extends Func {
+  ASecFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(acos(1 / x));
+  }
+}
+
+class ACscFunc extends Func {
+  ACscFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(asin(1 / x));
+  }
+}
+
+class ACotFunc extends Func {
+  ACotFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(atan(1 / x));
+  }
+}
+
+class SqrtFunc extends Func {
+  SqrtFunc() : super([Parameter(ValueType("number"), "x")]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(sqrt(x));
+  }
+}
+
+class NRootFunc extends Func {
+  NRootFunc()
+      : super([
+          Parameter(ValueType("number"), "n"),
+          Parameter(ValueType("number"), "x")
+        ]);
+
+  @override
+  Value _evaluate(List<Value> arguments) {
+    double n = (arguments[0] as NumberValue).value;
+    double x = (arguments[0] as NumberValue).value;
+    return NumberValue(pow(x, 1 / n) as double);
+  }
+}
+
 class RangeFunc extends Func {
   RangeFunc()
       : super([
