@@ -28,11 +28,13 @@ enum TokenType {
   TERNARY,
   COLON,
   NULL,
+  CURSOR_FILLER
 }
 
 class Token {
   TokenType type;
   String? value;
+  int cursorIndex = 0;
 
   Token(this.type, this.value);
 

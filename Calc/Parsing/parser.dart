@@ -20,10 +20,12 @@ class Parser {
   }
 
   Token previous() {
+    if (current == 0) return Token(TokenType.NULL, null);
     return tokens[current - 1];
   }
 
   Token advance() {
+    if (isAtEnd()) return Token(TokenType.NULL, null);
     current += 1;
 
     return previous();
@@ -67,6 +69,15 @@ class Parser {
     }
 
     parseError(message);
+  }
+
+  List<Expr> parseExpressions() {
+    List<Expr> exprs = [];
+    while (!isAtEnd()) {
+      exprs.add(parseExpression());
+    }
+
+    return exprs;
   }
 
   Decl parseDeclaration() {
@@ -153,6 +164,7 @@ class Parser {
   }
 
   Expr parseExpression() {
+    if (isAtEnd()) return NullExpr();
     return ternary();
   }
 
@@ -196,6 +208,8 @@ class Parser {
       }
 
       return ArrayExpr(elements);
+    } else if (t.type == TokenType.CURSOR_FILLER) {
+      return CursorExpr();
     }
 
     return NullExpr();

@@ -11,3 +11,5 @@ fun apply(function func, array arr) do
 
     return res
 end
+
+export apply

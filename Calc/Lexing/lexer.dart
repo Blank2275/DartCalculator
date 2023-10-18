@@ -53,19 +53,42 @@ List<Token> lex(String text) {
   void number() {
     String string = previous();
 
-    while (isNumeric(peek())) {
+    int index = 1;
+    int cursorIndex = 0;
+
+    while (isNumeric(peek()) || peek() == "|") {
       string += consume();
+      if (peek() == "|") {
+        consume();
+        cursorIndex = index;
+      }
+      index += 1;
     }
 
-    if (peek() == ".") {
+    if (peek() == "." || peek() == "|") {
       string += consume();
+      index += 1;
 
-      while (isNumeric(peek())) {
+      if (peek() == "|") {
+        consume();
+        cursorIndex = index;
+      }
+
+      while (isNumeric(peek()) || peek() == "|") {
+        if (peek() == "|") {
+          consume();
+          cursorIndex = index;
+        }
         string += consume();
+
+        index += 1;
       }
     }
 
-    tokens.add(Token(TokenType.NUMBER_LITERAL, string));
+    Token numberToken = Token(TokenType.NUMBER_LITERAL, string);
+    numberToken.cursorIndex = cursorIndex;
+
+    tokens.add(numberToken);
   }
 
   void identifier() {
@@ -132,6 +155,12 @@ List<Token> lex(String text) {
       case "|":
         if (match("|")) {
           tokens.add(Token(TokenType.OR, null));
+        } else {
+          if (tokens.isEmpty) {
+            tokens.add(Token(TokenType.CURSOR_FILLER, null));
+          } else {
+            tokens[tokens.length - 1].cursorIndex = 1;
+          }
         }
         break;
       case "=":

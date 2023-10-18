@@ -153,6 +153,8 @@ class NumberExpr extends Expr {
   }
 }
 
+class CursorExpr extends Expr {}
+
 class BooleanExpr extends Expr {
   Token value;
 
