@@ -1,7 +1,3 @@
-fun pad(n) do
-    return [0, n, 0]
-end
-
 fun quickMat(x, y, function val) do
     mat = []
 
@@ -17,14 +13,10 @@ fun quickMat(x, y, function val) do
     return mat
 end
 
-fun paraboloid(x, y) do
-    relX = x - 20
-    relY = y - 20
-
-    return sin(relX / 3.14) + cos(relY / 3.14)
+fun f(x, y) do
+    return sin(x / 5 + y / 10)
 end
 
-mat = quickMat(40, 40, paraboloid)
+mat = quickMat(20, 20, f)
 
 print mat
-

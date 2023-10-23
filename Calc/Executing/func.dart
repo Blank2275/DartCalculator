@@ -36,6 +36,7 @@ class Func {
       if (arguments[i] is ArrayValue && typeName != "array") return false;
       if (arguments[i] is FunctionValue && typeName != "function") return false;
       if (arguments[i] is StringValue && typeName != "string") return false;
+      if (arguments[i] is NullValue && typeName != "nullType") return false;
     }
 
     return true;

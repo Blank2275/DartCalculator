@@ -69,6 +69,11 @@ class ErrorValue extends Value {
   ErrorValue(this.message);
 
   ErrorValue.type(this.type, this.message);
+
+  @override
+  String toString() {
+    return "$type: $message";
+  }
 }
 
 class NullValue extends Value {
@@ -541,6 +546,10 @@ class NumberValue extends Value {
       List<Value> res = [];
 
       for (Value element in other.value) {
+        if (element is NullValue) {
+          return ErrorValue(
+              "Can only exponentiate numbers with other numbers or arrays");
+        }
         res.add(this.valuePow(element));
       }
 
